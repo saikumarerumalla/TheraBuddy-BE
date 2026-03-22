@@ -34,7 +34,7 @@ class UserService:
             user.age_range = onboarding_data.get("age_range")
             user.gender = onboarding_data.get("gender")
             user.prefecture = onboarding_data.get("prefecture")
-            user.language_preference = onboarding_data.get("language_preference", "ja")
+            user.language_preference = onboarding_data.get("language_preference", "en")
             
             # Encrypt sensitive data
             if onboarding_data.get("has_previous_therapy"):

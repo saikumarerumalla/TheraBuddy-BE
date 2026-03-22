@@ -16,12 +16,6 @@ class GenderEnum(str, enum.Enum):
     PREFER_NOT_TO_SAY = "prefer_not_to_say"
 
 
-class LanguageEnum(str, enum.Enum):
-    JAPANESE = "ja"
-    ENGLISH = "en"
-    BOTH = "both"
-
-
 class User(Base):
     """User model"""
     __tablename__ = "users"
@@ -37,7 +31,7 @@ class User(Base):
     age_range = Column(String, nullable=True)
     gender = Column(SQLEnum(GenderEnum), nullable=True)
     prefecture = Column(String, nullable=True)
-    language_preference = Column(SQLEnum(LanguageEnum), default=LanguageEnum.JAPANESE)
+    language_preference = Column(String, default="en")
     
     # Mental Health Background (encrypted)
     has_previous_therapy = Column(String, nullable=True)  # encrypted JSON

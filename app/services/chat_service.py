@@ -85,8 +85,7 @@ class ChatService:
         """
         
         # Detect crisis
-        language = user_profile.get("language_preference", "ja")
-        is_crisis, risk_level, crisis_keywords = SafetyFilter.detect_crisis(content, language)
+        is_crisis, risk_level, crisis_keywords = SafetyFilter.detect_crisis(content)
         
         # Assess sentiment
         sentiment_score = SafetyFilter.assess_sentiment(content)
@@ -97,7 +96,7 @@ class ChatService:
             user_id=user_id,
             role="user",
             content=encryption_manager.encrypt(content),
-            content_language=language,
+            content_language="en",
             sentiment_score=sentiment_score,
             crisis_keywords_detected=str(crisis_keywords) if crisis_keywords else None,
             safety_flagged=is_crisis
@@ -118,7 +117,7 @@ class ChatService:
             )
             
             # Get crisis resources
-            crisis_resources = self._get_crisis_resources(language)
+            crisis_resources = self._get_crisis_resources()
         
         # Build conversation context
         conversation_history = await self.get_conversation_history(conversation_id, limit=10)
@@ -146,8 +145,7 @@ class ChatService:
                 "stream": self._stream_ai_response(
                     llm_messages=llm_messages,
                     conversation_id=conversation_id,
-                    user_id=user_id,
-                    language=language
+                    user_id=user_id
                 ),
                 "crisis_detected": is_crisis,
                 "crisis_resources": crisis_resources
@@ -166,7 +164,7 @@ class ChatService:
                 user_id=user_id,
                 role="assistant",
                 content=encryption_manager.encrypt(llm_response.content),
-                content_language=language,
+                content_language="en",
                 tokens_used=llm_response.tokens_used,
                 model_used=llm_response.model,
                 response_time_ms=llm_response.response_time_ms
@@ -191,8 +189,7 @@ class ChatService:
         self,
         llm_messages: List[LLMMessage],
         conversation_id: uuid.UUID,
-        user_id: uuid.UUID,
-        language: str
+        user_id: uuid.UUID
     ):
         """Stream AI response"""
         
@@ -212,7 +209,7 @@ class ChatService:
             user_id=user_id,
             role="assistant",
             content=encryption_manager.encrypt(full_response),
-            content_language=language
+            content_language="en"
         )
         
         self.db.add(ai_message)
@@ -236,7 +233,7 @@ class ChatService:
             risk_level=risk_level,
             keywords_detected=keywords,
             context=encryption_manager.encrypt(context),
-            resources_provided=self._get_crisis_resources("ja"),
+            resources_provided=self._get_crisis_resources(),
             human_notified=(risk_level == "critical")
         )
         
@@ -248,65 +245,32 @@ class ChatService:
             # TODO: Implement notification system (email, SMS, dashboard alert)
             pass
     
-    def _get_crisis_resources(self, language: str) -> Dict:
+    def _get_crisis_resources(self) -> Dict:
         """Get crisis intervention resources"""
         
-        if language == "ja":
-            return {
-                "hotlines": [
-                    {
-                        "name": "TELL ライフライン",
-                        "phone": "03-5774-0992",
-                        "hours": "毎日 9:00-23:00",
-                        "language": "英語・日本語"
-                    },
-                    {
-                        "name": "いのちの電話",
-                        "phone": "0570-783-556",
-                        "hours": "24時間",
-                        "language": "日本語"
-                    }
-                ],
-                "emergency": [
-                    {
-                        "name": "警察",
-                        "phone": "110"
-                    },
-                    {
-                        "name": "救急",
-                        "phone": "119"
-                    }
-                ],
-                "message": "あなたの命は大切です。今すぐ助けが必要な場合は、上記の連絡先に電話してください。"
-            }
-        else:
-            return {
-                "hotlines": [
-                    {
-                        "name": "TELL Lifeline",
-                        "phone": "03-5774-0992",
-                        "hours": "Daily 9:00-23:00",
-                        "language": "English & Japanese"
-                    },
-                    {
-                        "name": "Inochi no Denwa",
-                        "phone": "0570-783-556",
-                        "hours": "24/7",
-                        "language": "Japanese"
-                    }
-                ],
-                "emergency": [
-                    {
-                        "name": "Police",
-                        "phone": "110"
-                    },
-                    {
-                        "name": "Ambulance",
-                        "phone": "119"
-                    }
-                ],
-                "message": "Your life matters. If you need immediate help, please call one of the numbers above."
-            }
+        return {
+            "hotlines": [
+                {
+                    "name": "988 Suicide & Crisis Lifeline",
+                    "phone": "988",
+                    "hours": "24/7",
+                    "language": "English"
+                },
+                {
+                    "name": "Crisis Text Line",
+                    "phone": "Text HOME to 741741",
+                    "hours": "24/7",
+                    "language": "English"
+                }
+            ],
+            "emergency": [
+                {
+                    "name": "Emergency Services",
+                    "phone": "911"
+                }
+            ],
+            "message": "Your life matters. If you need immediate help, please call one of the numbers above."
+        }
     
     async def _update_conversation_stats(self, conversation_id: uuid.UUID):
         """Update conversation statistics"""

@@ -14,7 +14,7 @@ class OnboardingData(BaseModel):
     age_range: Optional[str] = None
     gender: Optional[str] = None
     prefecture: Optional[str] = None
-    language_preference: str = "ja"
+    language_preference: str = "en"
     has_previous_therapy: Optional[str] = None
     current_medication: Optional[str] = None
     primary_concerns: Optional[List[str]] = None

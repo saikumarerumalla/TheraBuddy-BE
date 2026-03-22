@@ -1,6 +1,6 @@
 # AI Therapy Platform - Backend API
 
-Production-grade backend for AI-powered therapy platform targeting the Japanese market.
+Production-grade backend for AI-powered therapy platform.
 
 ## Features
 

@@ -40,7 +40,7 @@ class Message(Base):
     
     role = Column(String, nullable=False)  # user, assistant, system
     content = Column(Text, nullable=False)  # Encrypted
-    content_language = Column(String, default="ja")
+    content_language = Column(String, default="en")
     
     # Metadata
     created_at = Column(DateTime(timezone=True), server_default=func.now())

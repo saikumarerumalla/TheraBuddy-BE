@@ -51,11 +51,7 @@ class Settings(BaseSettings):
     RATE_LIMIT_PER_HOUR: int = 1000
     
     # Crisis Detection
-    CRISIS_KEYWORDS_JA: list = [
-        "自殺", "死にたい", "消えたい", "終わりにしたい",
-        "生きる価値がない", "死ぬ", "自傷"
-    ]
-    CRISIS_KEYWORDS_EN: list = [
+    CRISIS_KEYWORDS: list = [
         "suicide", "kill myself", "end my life", "want to die",
         "no reason to live", "harm myself", "self-harm"
     ]

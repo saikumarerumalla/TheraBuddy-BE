@@ -11,22 +11,7 @@ class SafetyFilter:
     """Detect crisis keywords and assess risk level"""
     
     # Crisis keywords with severity levels
-    CRISIS_KEYWORDS_JA = {
-        "critical": [
-            "今すぐ死にたい", "今から死ぬ", "遺書", "自殺する",
-            "飛び降り", "首を吊", "薬を飲む", "今日死"
-        ],
-        "high": [
-            "死にたい", "消えたい", "終わりにしたい", "自殺",
-            "生きる価値", "死ぬ方法", "楽に死ね"
-        ],
-        "medium": [
-            "疲れた", "もう無理", "限界", "助けて",
-            "辛すぎる", "耐えられない", "消えてしまいたい"
-        ]
-    }
-    
-    CRISIS_KEYWORDS_EN = {
+    CRISIS_KEYWORDS = {
         "critical": [
             "kill myself now", "going to die", "suicide note",
             "end it today", "jump off", "hang myself"
@@ -42,7 +27,7 @@ class SafetyFilter:
     }
     
     @staticmethod
-    def detect_crisis(text: str, language: str = "ja") -> Tuple[bool, str, List[str]]:
+    def detect_crisis(text: str) -> Tuple[bool, str, List[str]]:
         """
         Detect crisis keywords in text
         
@@ -51,7 +36,7 @@ class SafetyFilter:
         """
         
         text_lower = text.lower()
-        keywords_dict = SafetyFilter.CRISIS_KEYWORDS_JA if language == "ja" else SafetyFilter.CRISIS_KEYWORDS_EN
+        keywords_dict = SafetyFilter.CRISIS_KEYWORDS
         
         detected = []
         highest_risk = "low"
@@ -89,8 +74,8 @@ class SafetyFilter:
         """
         
         # This is a simplified version - in production, use a proper model
-        positive_words = ["嬉しい", "良い", "楽しい", "幸せ", "happy", "good", "great", "better"]
-        negative_words = ["悲しい", "辛い", "苦しい", "悪い", "sad", "bad", "terrible", "worse"]
+        positive_words = ["happy", "good", "great", "better", "wonderful", "excited", "grateful", "hopeful"]
+        negative_words = ["sad", "bad", "terrible", "worse", "awful", "hopeless", "miserable", "depressed"]
         
         text_lower = text.lower()
         

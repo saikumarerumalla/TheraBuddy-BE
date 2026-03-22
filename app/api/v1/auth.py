@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.core.security import security_manager
 from app.services.user_service import UserService
-from app.schemas.user import UserCreate, TokenResponse, OnboardingData
+from app.schemas.user import UserCreate, TokenResponse, OnboardingData, RegisterRequest
 from datetime import timedelta
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
@@ -11,8 +11,7 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 
 @router.post("/register", response_model=TokenResponse)
 async def register(
-    user_data: UserCreate,
-    onboarding: OnboardingData,
+    request_data: RegisterRequest,
     db: AsyncSession = Depends(get_db)
 ):
     """Register a new user"""
@@ -20,8 +19,8 @@ async def register(
     user_service = UserService(db)
     
     # Check if email already exists
-    if user_data.email:
-        existing_user = await user_service.get_user_by_email(user_data.email)
+    if request_data.email:
+        existing_user = await user_service.get_user_by_email(request_data.email)
         if existing_user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -30,10 +29,10 @@ async def register(
     
     # Create user
     user = await user_service.create_user(
-        email=user_data.email,
-        password=user_data.password,
-        is_anonymous=user_data.is_anonymous,
-        onboarding_data=onboarding.dict()
+        email=request_data.email,
+        password=request_data.password,
+        is_anonymous=request_data.is_anonymous,
+        onboarding_data=request_data.onboarding.dict()
     )
     
     # Create tokens

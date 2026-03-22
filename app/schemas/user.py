@@ -38,6 +38,13 @@ class OnboardingData(BaseModel):
         return v
 
 
+class RegisterRequest(BaseModel):
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+    is_anonymous: bool = False
+    onboarding: OnboardingData
+
+
 class UserResponse(BaseModel):
     id: uuid.UUID
     email: Optional[str]

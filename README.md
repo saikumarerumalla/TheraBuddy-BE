@@ -135,9 +135,35 @@ pytest
 pytest --cov=app tests/
 ```
 
-## Deployment
+## Deployment (Self-Hosted VM)
 
-See `docs/deployment.md` for production deployment instructions.
+To deploy this application on your own VM using Docker:
+
+1.  **Prepare the VM:**
+    *   Install Docker and Docker Compose.
+    *   Clone your repository to the VM.
+
+2.  **Configuration:**
+    *   Create a `.env` file from `.env.sample`.
+    *   Configure production-ready values (Database URLs, API Keys, Secret Key).
+
+3.  **Deploy:**
+    ```bash
+    # Build and start services in detached mode
+    docker-compose up -d --build
+    ```
+
+4.  **Database Migrations:**
+    ```bash
+    # Run migrations inside the api container
+    docker-compose exec api alembic upgrade head
+    ```
+
+5.  **Monitoring:**
+    ```bash
+    # View logs
+    docker-compose logs -f
+    ```
 
 ## License
 
